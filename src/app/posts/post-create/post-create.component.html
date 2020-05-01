@@ -1,7 +1,14 @@
 <h2>The Post-Create component</h2>
 <mat-card>
   <mat-form-field>
-    <textarea matInput [(ngModel)]="enteredContent"></textarea>
+    <input type="text" matInput [(ngModel)]="title" placeholder="Post Title" />
+  </mat-form-field>
+  <mat-form-field>
+    <textarea
+      matInput
+      [(ngModel)]="content"
+      placeholder="Post Content"
+    ></textarea>
   </mat-form-field>
   <p>
     <button mat-flat-button color="primary" (click)="onAddPost()">
