@@ -1,0 +1,12 @@
+<h2>The Post-Create component</h2>
+<mat-card>
+  <mat-form-field>
+    <textarea matInput [(ngModel)]="enteredContent"></textarea>
+  </mat-form-field>
+  <p>
+    <button mat-flat-button color="primary" (click)="onAddPost()">
+      Submit
+    </button>
+  </p>
+</mat-card>
+<p>{{ postValue }}</p>
