@@ -1,18 +1,33 @@
 <h2>The Post-Create component</h2>
-<mat-card>
-  <mat-form-field>
-    <input type="text" matInput [(ngModel)]="title" placeholder="Post Title" />
-  </mat-form-field>
-  <mat-form-field>
-    <textarea
-      matInput
-      [(ngModel)]="content"
-      placeholder="Post Content"
-    ></textarea>
-  </mat-form-field>
-  <p>
-    <button mat-flat-button color="primary" (click)="onAddPost()">
-      Submit
-    </button>
-  </p>
-</mat-card>
+<form (submit)="onAddPost(form)" #form="ngForm">
+  <mat-card>
+    <mat-form-field>
+      <input
+        type="text"
+        placeholder="Post Title"
+        name="title"
+        required
+        ngModel
+        matInput
+        #title="ngModel"
+      />
+      <mat-error *ngIf="title.invalid">Please enter a post title</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea
+        placeholder="Post Content"
+        name="content"
+        required
+        ngModel
+        matInput
+        #content="ngModel"
+      ></textarea>
+      <mat-error *ngIf="content.invalid">Please enter post content</mat-error>
+    </mat-form-field>
+    <p>
+      <button mat-flat-button color="primary" [disabled]="form.invalid">
+        Submit
+      </button>
+    </p>
+  </mat-card>
+</form>
