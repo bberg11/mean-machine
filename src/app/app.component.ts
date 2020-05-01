@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 
+import { Post } from './posts/post.model';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  posts = [
+  posts: Post[] = [
     {
       title: 'tincidunt dui ut ornare lectus',
       content:
@@ -34,7 +36,7 @@ export class AppComponent {
     },
   ];
 
-  onPostAdded(post): void {
+  onPostAdded(post: Post): void {
     this.posts.unshift(post);
   }
 }
