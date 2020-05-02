@@ -35,13 +35,24 @@ app.post('/api/posts', (request, response) => {
   const post = new Post(request.body);
 
   post.save();
-  response.status(201).json(post);
+  response.status(201).json({
+    message: 'Post successfully added',
+    post: post,
+  });
 });
 
 app.get('/api/posts', (request, response) => {
   Post.find().then((docs) => {
     response.status(200).json({
       posts: docs,
+    });
+  });
+});
+
+app.delete('/api/posts/:id', (request, response) => {
+  Post.findByIdAndDelete(request.params.id).then(() => {
+    response.status(200).json({
+      message: 'Post sucessfully deleted',
     });
   });
 });

@@ -4,6 +4,10 @@
       {{ post.title }}
     </mat-expansion-panel-header>
     {{ post.content }}
+    <mat-action-row>
+      <button mat-button color="primary">EDIT</button>
+      <button mat-button color="warn" (click)="onDelete(post)">Delete</button>
+    </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
 <p class="mat-body-text" *ngIf="posts.length === 0">No posts yet</p>
