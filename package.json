@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "eslint \"**/*.{js,ts}\" --quiet --fix",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "start:server": "nodemon server.js"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +22,8 @@
     "@angular/platform-browser": "~9.1.1",
     "@angular/platform-browser-dynamic": "~9.1.1",
     "@angular/router": "~9.1.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -45,6 +48,7 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~3.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
+    "nodemon": "^2.0.3",
     "prettier": "^2.0.5",
     "prettier-eslint": "^9.0.1",
     "protractor": "~5.4.3",
