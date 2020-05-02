@@ -21,9 +21,11 @@ export class PostsService {
   }
 
   addPost(post: Post): void {
-    this.http.post('http://localhost:3000/api/posts', post).subscribe(() => {
-      this.posts.unshift(post);
-      this.postsUpdated.next([...this.posts]);
-    });
+    this.http
+      .post<Post>('http://localhost:3000/api/posts', post)
+      .subscribe((savedPost) => {
+        this.posts.unshift(savedPost);
+        this.postsUpdated.next([...this.posts]);
+      });
   }
 }
