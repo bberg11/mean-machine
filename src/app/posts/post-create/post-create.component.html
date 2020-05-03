@@ -13,6 +13,13 @@
         >Please enter a post title</mat-error
       >
     </mat-form-field>
+    <p>
+      <button type="button" mat-stroked-button (click)="fileInput.click()">
+        Choose Image
+      </button>
+      <input type="file" #fileInput (change)="onImageChange($event)" />
+    </p>
+    <p *ngIf="imagePreview"><img [src]="imagePreview" /></p>
     <mat-form-field>
       <textarea
         placeholder="Post Content"

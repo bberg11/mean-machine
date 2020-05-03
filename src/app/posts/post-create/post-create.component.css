@@ -7,3 +7,17 @@ textarea {
 .mat-card {
   margin: 0 0 1rem;
 }
+
+input[type='file'] {
+  visibility: hidden;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  img {
+    max-width: 50%;
+  }
+}
