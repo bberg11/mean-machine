@@ -28,13 +28,26 @@ export class PostsService {
     return [...this.posts];
   }
 
-  updatePost(id: string, updatedPost: Post): void {
+  updatePost(id: string, updatedPost: Post, image: string | File): void {
     const postIndex = this.posts.findIndex((post) => post._id === id);
+    let formData;
+
+    if (typeof image === 'string') {
+      formData = {
+        ...updatedPost,
+        imagePath: image,
+      };
+    } else {
+      formData = new FormData();
+      formData.append('title', updatedPost.title);
+      formData.append('content', updatedPost.content);
+      formData.append('image', image);
+    }
 
     this.http
       .patch<{ message: string; post: Post }>(
         `${this.endpoint}/${id}`,
-        updatedPost
+        formData
       )
       .subscribe((response) => {
         this.posts[postIndex] = response.post;
@@ -46,9 +59,15 @@ export class PostsService {
       });
   }
 
-  addPost(post: Post): void {
+  addPost(post: Post, image: File): void {
+    const postData = new FormData();
+
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', image);
+
     this.http
-      .post<{ message: string; post: Post }>(this.endpoint, post)
+      .post<{ message: string; post: Post }>(this.endpoint, postData)
       .subscribe((response) => {
         this.posts.push(response.post);
         this.postsUpdated.next([...this.posts]);

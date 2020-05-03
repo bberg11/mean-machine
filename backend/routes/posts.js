@@ -1,17 +1,51 @@
 const express = require('express');
 const Post = require('../models/post');
+const multer = require('multer');
 
 const router = express.Router();
 
-router.post('', (request, response) => {
-  const post = new Post(request.body);
+const MIME_TYPE_MAP = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg',
+};
 
-  post.save();
-  response.status(201).json({
-    message: 'Post successfully added',
-    post: post,
-  });
+const storage = multer.diskStorage({
+  destination: (request, file, callback) => {
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error('Invalid mime type');
+    if (isValid) {
+      error = null;
+    }
+    callback(error, 'backend/images');
+  },
+  filename: (request, file, callback) => {
+    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    callback(null, name + '-' + Date.now() + '.' + ext);
+  },
 });
+
+router.post(
+  '',
+  multer({ storage: storage }).single('image'),
+  (request, response) => {
+    const url = request.protocol + '://' + request.get('host');
+    const imagePath = url + '/images/' + request.file.filename;
+
+    const post = new Post({
+      title: request.body.title,
+      content: request.body.content,
+      imagePath,
+    });
+
+    post.save();
+    response.status(201).json({
+      message: 'Post successfully added',
+      post: post,
+    });
+  }
+);
 
 router.get('', (request, response) => {
   Post.find().then((docs) => {
@@ -29,15 +63,33 @@ router.delete('/:id', (request, response) => {
   });
 });
 
-router.patch('/:id', (request, response) => {
-  Post.findByIdAndUpdate(request.params.id, request.body, { new: true }).then(
-    (post) => {
-      response.status(200).json({
-        message: 'Post successfully updated',
-        post: post,
-      });
+router.patch(
+  '/:id',
+  multer({ storage: storage }).single('image'),
+  (request, response) => {
+    let post;
+
+    if (request.file) {
+      const url = request.protocol + '://' + request.get('host');
+      const imagePath = url + '/images/' + request.file.filename;
+
+      post = {
+        ...request.body,
+        imagePath,
+      };
+    } else {
+      post = request.body;
     }
-  );
-});
+
+    Post.findByIdAndUpdate(request.params.id, post, { new: true }).then(
+      (post) => {
+        response.status(200).json({
+          message: 'Post successfully updated',
+          post: post,
+        });
+      }
+    );
+  }
+);
 
 module.exports = router;

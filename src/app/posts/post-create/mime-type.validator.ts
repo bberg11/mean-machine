@@ -1,12 +1,13 @@
 import { AbstractControl } from '@angular/forms';
 import { Observable, Observer, of } from 'rxjs';
+import { isEmpty } from 'lodash';
 
 export const mimeType = (
   control: AbstractControl
 ):
   | Promise<{ [key: string]: unknown }>
   | Observable<{ [key: string]: unknown }> => {
-  if (typeof control.value === 'string') {
+  if (typeof control.value === 'string' || isEmpty(control.value)) {
     return of(null);
   }
   const file = control.value as File;
