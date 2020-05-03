@@ -19,7 +19,9 @@
       </button>
       <input type="file" #fileInput (change)="onImageChange($event)" />
     </p>
-    <p *ngIf="imagePreview"><img [src]="imagePreview" /></p>
+    <p *ngIf="imagePreview && form.get('image').valid">
+      <img [src]="imagePreview" />
+    </p>
     <mat-form-field>
       <textarea
         placeholder="Post Content"

@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 
 import { PostsService } from './../posts.service';
 import { Post } from './../post.model';
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -25,9 +26,9 @@ export class PostCreateComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = new FormGroup({
-      title: new FormControl(null, Validators.required),
-      content: new FormControl(null, Validators.required),
-      image: new FormControl(null),
+      title: new FormControl(null, { validators: [Validators.required] }),
+      content: new FormControl(null, { validators: [Validators.required] }),
+      image: new FormControl(null, { asyncValidators: [mimeType] }),
     });
 
     this.postsService.postsUpdated.subscribe(() => {
