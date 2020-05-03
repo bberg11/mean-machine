@@ -1,5 +1,5 @@
-<h2>The Post-Create component</h2>
-<form (submit)="onAddPost(form)" #form="ngForm">
+<h2>{{ editMode ? 'Update Post' : 'Add Post' }}</h2>
+<form (submit)="onSubmit(form)" #form="ngForm">
   <mat-card>
     <mat-form-field>
       <input
@@ -7,7 +7,7 @@
         placeholder="Post Title"
         name="title"
         required
-        ngModel
+        [ngModel]="post?.title"
         matInput
         #title="ngModel"
       />
@@ -18,7 +18,7 @@
         placeholder="Post Content"
         name="content"
         required
-        ngModel
+        [ngModel]="post?.content"
         matInput
         #content="ngModel"
       ></textarea>
@@ -26,7 +26,7 @@
     </mat-form-field>
     <p>
       <button mat-flat-button color="primary" [disabled]="form.invalid">
-        Submit
+        {{ editMode ? 'Update' : 'Submit' }}
       </button>
     </p>
   </mat-card>

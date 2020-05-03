@@ -19,6 +19,30 @@ export class PostsService {
     });
   }
 
+  getPost(id: string): Post {
+    return { ...this.posts.find((post) => id === post._id) };
+  }
+
+  updatePosts(): Post[] {
+    return [...this.posts];
+  }
+
+  updatePost(id: string, updatedPost: Post): void {
+    const postIndex = this.posts.findIndex((post) => post._id === id);
+
+    this.http
+      .patch<{ message: string; post: Post }>(
+        `${this.endpoint}/${id}`,
+        updatedPost
+      )
+      .subscribe((response) => {
+        this.posts[postIndex] = response.post;
+        this.postsUpdated.next([...this.posts]);
+
+        console.log(response.message);
+      });
+  }
+
   addPost(post: Post): void {
     this.http
       .post<{ message: string; post: Post }>(this.endpoint, post)

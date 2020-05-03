@@ -57,4 +57,15 @@ app.delete('/api/posts/:id', (request, response) => {
   });
 });
 
+app.patch('/api/posts/:id', (request, response) => {
+  Post.findByIdAndUpdate(request.params.id, request.body, { new: true }).then(
+    (post) => {
+      response.status(200).json({
+        message: 'Post successfully updated',
+        post: post,
+      });
+    }
+  );
+});
+
 module.exports = app;
