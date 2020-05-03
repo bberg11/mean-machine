@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { isEmpty } from 'lodash';
 
 import { PostsService } from './../posts.service';
 import { Post } from './../post.model';
@@ -11,6 +12,7 @@ import { Post } from './../post.model';
   styleUrls: ['./post-create.component.css'],
 })
 export class PostCreateComponent implements OnInit {
+  form: FormGroup;
   editMode = false;
   post: Post;
   id: string;
@@ -21,9 +23,14 @@ export class PostCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.form = new FormGroup({
+      title: new FormControl(null, Validators.required),
+      content: new FormControl(null, Validators.required),
+    });
+
     this.postsService.postsUpdated.subscribe(() => {
       if (this.id) {
-        this.post = this.postsService.getPost(this.id);
+        this.setUpEditForm();
       }
     });
 
@@ -31,16 +38,15 @@ export class PostCreateComponent implements OnInit {
       this.id = paramMap.get('id');
 
       if (this.id) {
-        this.editMode = true;
-        this.post = this.postsService.getPost(this.id);
+        this.setUpEditForm();
       }
     });
   }
 
-  onSubmit(form: NgForm): void {
+  onSubmit(): void {
     const post: Post = {
-      title: form.value.title,
-      content: form.value.content,
+      title: this.form.value.title,
+      content: this.form.value.content,
     };
 
     if (this.editMode) {
@@ -49,6 +55,20 @@ export class PostCreateComponent implements OnInit {
       this.postsService.addPost(post);
     }
 
-    form.resetForm();
+    this.form.reset();
+  }
+
+  setUpEditForm(): void {
+    this.editMode = true;
+    this.post = this.postsService.getPost(this.id);
+
+    if (isEmpty(this.post)) {
+      return;
+    }
+
+    this.form.setValue({
+      title: this.post.title,
+      content: this.post.content,
+    });
   }
 }

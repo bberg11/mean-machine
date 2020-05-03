@@ -1,28 +1,28 @@
 <h2>{{ editMode ? 'Update Post' : 'Add Post' }}</h2>
-<form (submit)="onSubmit(form)" #form="ngForm">
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
   <mat-card>
     <mat-form-field>
       <input
         type="text"
         placeholder="Post Title"
         name="title"
-        required
-        [ngModel]="post?.title"
         matInput
-        #title="ngModel"
+        formControlName="title"
       />
-      <mat-error *ngIf="title.invalid">Please enter a post title</mat-error>
+      <mat-error *ngIf="form.get('title').invalid"
+        >Please enter a post title</mat-error
+      >
     </mat-form-field>
     <mat-form-field>
       <textarea
         placeholder="Post Content"
         name="content"
-        required
-        [ngModel]="post?.content"
         matInput
-        #content="ngModel"
+        formControlName="content"
       ></textarea>
-      <mat-error *ngIf="content.invalid">Please enter post content</mat-error>
+      <mat-error *ngIf="form.get('title').invalid"
+        >Please enter post content</mat-error
+      >
     </mat-form-field>
     <p>
       <button mat-flat-button color="primary" [disabled]="form.invalid">
