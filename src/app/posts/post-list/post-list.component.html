@@ -1,4 +1,5 @@
 <mat-paginator
+  *ngIf="posts.length > 0"
   [length]="postsService.totalPosts"
   [pageSize]="postsService.perPage"
   [pageSizeOptions]="postsService.paginationOptions"
@@ -21,6 +22,7 @@
 </mat-accordion>
 <p class="mat-body-text" *ngIf="posts.length === 0">No posts yet</p>
 <mat-paginator
+  *ngIf="posts.length > 0"
   [length]="postsService.totalPosts"
   [pageSize]="postsService.perPage"
   [pageSizeOptions]="postsService.paginationOptions"
