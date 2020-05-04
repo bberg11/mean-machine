@@ -110,7 +110,7 @@ exports.updatePost = (request, response) => {
 
   Post.updateOne({ _id: request.params.id, creator: request.userData.id }, post)
     .then((result) => {
-      if (result.nModified > 0) {
+      if (result.n > 0) {
         response
           .status(200)
           .json({ message: 'Post successfully updated', post: post });
