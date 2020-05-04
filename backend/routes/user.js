@@ -33,6 +33,7 @@ router.post('/login', (request, response) => {
 
   User.findOne({ email: request.body.email })
     .then((user) => {
+      console.log(user);
       if (!user) {
         return response.status(401).json({
           message: 'Auth failed',
