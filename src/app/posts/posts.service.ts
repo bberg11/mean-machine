@@ -1,31 +1,36 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { Post } from './post.model';
+import { PageEvent } from '@angular/material/paginator';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   private endpoint = 'http://localhost:3000/api/posts';
   private posts: Post[] = [];
+  totalPosts = 0;
+  perPage = 5;
+  paginationOptions = [5, 10, 25, 100];
+  currentPage = 1;
   postsUpdated = new Subject<Post[]>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
   getPosts(): void {
-    this.http.get<{ posts: Post[] }>(this.endpoint).subscribe((response) => {
-      this.posts = response.posts;
-      this.postsUpdated.next([...this.posts]);
-    });
+    const queryParams = `?perPage=${this.perPage}&currentPage=${this.currentPage}`;
+    this.http
+      .get<{ posts: Post[]; totalPosts: number }>(this.endpoint + queryParams)
+      .subscribe((response) => {
+        this.posts = response.posts;
+        this.totalPosts = response.totalPosts;
+        this.postsUpdated.next([...this.posts]);
+      });
   }
 
-  getPost(id: string): Post {
-    return { ...this.posts.find((post) => id === post._id) };
-  }
-
-  updatePosts(): Post[] {
-    return [...this.posts];
+  getPost(id: string): Observable<{ post: Post }> {
+    return this.http.get<{ post: Post }>(`${this.endpoint}/${id}`);
   }
 
   updatePost(id: string, updatedPost: Post, image: string | File): void {
@@ -71,6 +76,7 @@ export class PostsService {
       .subscribe((response) => {
         this.posts.push(response.post);
         this.postsUpdated.next([...this.posts]);
+        this.totalPosts = this.posts.length;
 
         console.log(response.message);
 
@@ -86,8 +92,16 @@ export class PostsService {
           return post._id !== postToDelete._id;
         });
         this.postsUpdated.next([...this.posts]);
+        this.totalPosts = this.posts.length;
 
         console.log(response.message);
       });
+  }
+
+  onPaginationChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex + 1;
+    this.perPage = event.pageSize;
+
+    this.getPosts();
   }
 }

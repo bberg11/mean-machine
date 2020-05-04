@@ -48,9 +48,32 @@ router.post(
 );
 
 router.get('', (request, response) => {
-  Post.find().then((docs) => {
+  const perPage = +request.query.perPage;
+  const currentPage = +request.query.currentPage;
+  const query = Post.find();
+  let posts;
+
+  if (perPage && currentPage) {
+    query.skip(perPage * (currentPage - 1)).limit(perPage);
+  }
+
+  query
+    .then((docs) => {
+      posts = docs;
+      return Post.count();
+    })
+    .then((count) => {
+      response.status(200).json({
+        posts: posts,
+        totalPosts: count,
+      });
+    });
+});
+
+router.get('/:id', (request, response) => {
+  Post.findById(request.params.id).then((post) => {
     response.status(200).json({
-      posts: docs,
+      post: post,
     });
   });
 });

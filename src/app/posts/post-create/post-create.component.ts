@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { isEmpty } from 'lodash';
 
 import { PostsService } from './../posts.service';
 import { Post } from './../post.model';
@@ -17,7 +16,7 @@ export class PostCreateComponent implements OnInit {
   editMode = false;
   post: Post;
   id: string;
-  imagePreview;
+  imagePreview: string | ArrayBuffer;
 
   constructor(
     private postsService: PostsService,
@@ -31,17 +30,14 @@ export class PostCreateComponent implements OnInit {
       image: new FormControl(null, { asyncValidators: [mimeType] }),
     });
 
-    this.postsService.postsUpdated.subscribe(() => {
-      if (this.id) {
-        this.setUpEditForm();
-      }
-    });
-
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.id = paramMap.get('id');
 
       if (this.id) {
-        this.setUpEditForm();
+        this.postsService.getPost(this.id).subscribe((response) => {
+          this.post = response.post;
+          this.setUpEditForm();
+        });
       }
     });
   }
@@ -79,12 +75,6 @@ export class PostCreateComponent implements OnInit {
 
   setUpEditForm(): void {
     this.editMode = true;
-    this.post = this.postsService.getPost(this.id);
-
-    if (isEmpty(this.post)) {
-      return;
-    }
-
     this.imagePreview = this.post.imagePath;
 
     this.form.setValue({
