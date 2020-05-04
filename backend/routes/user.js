@@ -20,9 +20,9 @@ router.post('/signup', (request, response) => {
           user: user,
         });
       })
-      .catch((err) => {
+      .catch(() => {
         response.status(500).json({
-          error: err,
+          message: `There was a problem creating your account. The email "${request.body.email}" may already be in use`,
         });
       });
   });
@@ -33,10 +33,9 @@ router.post('/login', (request, response) => {
 
   User.findOne({ email: request.body.email })
     .then((user) => {
-      console.log(user);
       if (!user) {
         return response.status(401).json({
-          message: 'Auth failed',
+          message: 'Unable to find a matching email and password',
         });
       }
 
@@ -47,7 +46,7 @@ router.post('/login', (request, response) => {
     .then((authenticated) => {
       if (!authenticated) {
         return response.status(401).json({
-          message: 'Auth failed',
+          message: 'Unable to find a matching email and password',
         });
       }
 
@@ -65,7 +64,7 @@ router.post('/login', (request, response) => {
     })
     .catch(() => {
       return response.status(401).json({
-        message: 'Auth failed',
+        message: 'Unable to find a matching email and password',
       });
     });
 });

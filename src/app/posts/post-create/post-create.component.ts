@@ -69,8 +69,6 @@ export class PostCreateComponent implements OnInit {
     } else {
       this.postsService.addPost(post, this.form.value.image);
     }
-
-    this.form.reset();
   }
 
   setUpEditForm(): void {

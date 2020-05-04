@@ -11,6 +11,6 @@ module.exports = (request, response, next) => {
     request.userData = { email: decodedToken.email, id: decodedToken.userId };
     next();
   } catch (error) {
-    response.status(401).json({ message: 'Auth failed!' });
+    response.status(401).json({ message: 'Authentication was unsuccessful' });
   }
 };

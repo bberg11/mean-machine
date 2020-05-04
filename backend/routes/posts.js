@@ -47,11 +47,19 @@ router.post(
       creator: request.userData.id,
     });
 
-    post.save();
-    response.status(201).json({
-      message: 'Post successfully added',
-      post: post,
-    });
+    post
+      .save()
+      .then(() => {
+        response.status(201).json({
+          message: 'Post successfully created',
+          post: post,
+        });
+      })
+      .catch(() => {
+        response.status(500).json({
+          message: 'We were unable to create your post',
+        });
+      });
   }
 );
 
@@ -75,28 +83,47 @@ router.get('', (request, response) => {
         posts: posts,
         totalPosts: count,
       });
+    })
+    .catch(() => {
+      response.status(500).json({
+        message: 'We were unable to retrieve posts',
+      });
     });
 });
 
 router.get('/:id', (request, response) => {
-  Post.findById(request.params.id).then((post) => {
-    response.status(200).json({
-      post: post,
+  Post.findById(request.params.id)
+    .then((post) => {
+      response.status(200).json({
+        post: post,
+      });
+    })
+    .catch(() => {
+      response.status(500).json({
+        message: `We were unable to find post with id=${request.params.id}`,
+      });
     });
-  });
 });
 
 router.delete('/:id', checkAuth, (request, response) => {
   Post.deleteOne({
     _id: request.params.id,
     creator: request.userData.id,
-  }).then((result) => {
-    if (result.n > 0) {
-      response.status(200).json({ message: 'Deletion successful!' });
-    } else {
-      response.status(401).json({ message: 'Not authorized!' });
-    }
-  });
+  })
+    .then((result) => {
+      if (result.n > 0) {
+        response.status(200).json({ message: 'Post was successfully deleted' });
+      } else {
+        response
+          .status(401)
+          .json({ message: 'You are not authorized to delete this post' });
+      }
+    })
+    .catch(() => {
+      response.status(500).json({
+        message: 'We were unable to delete this post',
+      });
+    });
 });
 
 router.patch(
@@ -121,15 +148,23 @@ router.patch(
     Post.updateOne(
       { _id: request.params.id, creator: request.userData.id },
       post
-    ).then((result) => {
-      if (result.nModified > 0) {
-        response
-          .status(200)
-          .json({ message: 'Update successful!', post: post });
-      } else {
-        response.status(401).json({ message: 'Not authorized!' });
-      }
-    });
+    )
+      .then((result) => {
+        if (result.nModified > 0) {
+          response
+            .status(200)
+            .json({ message: 'Post successfully updated', post: post });
+        } else {
+          response
+            .status(401)
+            .json({ message: 'You are not authorized to update this post' });
+        }
+      })
+      .catch(() => {
+        response.status(500).json({
+          message: 'We were unable to update your post',
+        });
+      });
   }
 );
 
