@@ -14,10 +14,10 @@ router.post('/signup', (request, response) => {
     });
     user
       .save()
-      .then((result) => {
+      .then((user) => {
         response.status(201).json({
           message: 'User created!',
-          result: result,
+          user: user,
         });
       })
       .catch((err) => {
