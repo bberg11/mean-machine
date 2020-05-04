@@ -30,13 +30,17 @@ router.post(
   '',
   multer({ storage: storage }).single('image'),
   (request, response) => {
-    const url = request.protocol + '://' + request.get('host');
-    const imagePath = url + '/images/' + request.file.filename;
+    let imagePath;
+
+    if (request.file) {
+      const url = request.protocol + '://' + request.get('host');
+      imagePath = url + '/images/' + request.file.filename;
+    }
 
     const post = new Post({
       title: request.body.title,
       content: request.body.content,
-      imagePath,
+      imagePath: imagePath || null,
     });
 
     post.save();
