@@ -23,6 +23,8 @@ export class PostsService {
     this.http
       .get<{ posts: Post[]; totalPosts: number }>(this.endpoint + queryParams)
       .subscribe((response) => {
+        console.log(response);
+
         this.posts = response.posts;
         this.totalPosts = response.totalPosts;
         this.postsUpdated.next([...this.posts]);
@@ -55,10 +57,10 @@ export class PostsService {
         formData
       )
       .subscribe((response) => {
+        console.log(response);
+
         this.posts[postIndex] = response.post;
         this.postsUpdated.next([...this.posts]);
-
-        console.log(response.message);
 
         this.router.navigate(['/']);
       });
@@ -74,11 +76,11 @@ export class PostsService {
     this.http
       .post<{ message: string; post: Post }>(this.endpoint, postData)
       .subscribe((response) => {
+        console.log(response);
+
         this.posts.push(response.post);
         this.postsUpdated.next([...this.posts]);
         this.totalPosts = this.posts.length;
-
-        console.log(response.message);
 
         this.router.navigate(['/']);
       });
@@ -88,13 +90,13 @@ export class PostsService {
     this.http
       .delete<{ message: string }>(`${this.endpoint}/${postToDelete._id}`)
       .subscribe((response) => {
+        console.log(response);
+
         this.posts = this.posts.filter((post) => {
           return post._id !== postToDelete._id;
         });
         this.postsUpdated.next([...this.posts]);
         this.totalPosts = this.posts.length;
-
-        console.log(response.message);
       });
   }
 

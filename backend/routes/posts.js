@@ -44,6 +44,7 @@ router.post(
       title: request.body.title,
       content: request.body.content,
       imagePath: imagePath || null,
+      creator: request.userData.id,
     });
 
     post.save();
@@ -86,10 +87,15 @@ router.get('/:id', (request, response) => {
 });
 
 router.delete('/:id', checkAuth, (request, response) => {
-  Post.findByIdAndDelete(request.params.id).then(() => {
-    response.status(200).json({
-      message: 'Post sucessfully deleted',
-    });
+  Post.deleteOne({
+    _id: request.params.id,
+    creator: request.userData.id,
+  }).then((result) => {
+    if (result.n > 0) {
+      response.status(200).json({ message: 'Deletion successful!' });
+    } else {
+      response.status(401).json({ message: 'Not authorized!' });
+    }
   });
 });
 
@@ -112,14 +118,18 @@ router.patch(
       post = request.body;
     }
 
-    Post.findByIdAndUpdate(request.params.id, post, { new: true }).then(
-      (post) => {
-        response.status(200).json({
-          message: 'Post successfully updated',
-          post: post,
-        });
+    Post.updateOne(
+      { _id: request.params.id, creator: request.userData.id },
+      post
+    ).then((result) => {
+      if (result.nModified > 0) {
+        response
+          .status(200)
+          .json({ message: 'Update successful!', post: post });
+      } else {
+        response.status(401).json({ message: 'Not authorized!' });
       }
-    );
+    });
   }
 );
 
