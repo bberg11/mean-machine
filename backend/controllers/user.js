@@ -49,7 +49,7 @@ exports.loginUser = (request, response) => {
 
       const token = jwt.sign(
         { email: fetchedUser.email, userId: fetchedUser._id },
-        'long_ass_secret_key_stored_somewhere_else',
+        process.env.JWT_KEY,
         { expiresIn: '1h' }
       );
 

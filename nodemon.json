@@ -1,0 +1,6 @@
+{
+  "env": {
+    "MONGO_ATLAS_CREDS": "bberg:X04Wh2ltjsT45RHV",
+    "JWT_KEY": "sU&dL|QuMQ8,4he>gG>TEOrV>'Q{cA"
+  }
+}

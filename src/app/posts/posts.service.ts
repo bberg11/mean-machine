@@ -3,12 +3,15 @@ import { Subject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
+import { environment } from '../../environments/environment';
+
 import { Post } from './post.model';
 import { PageEvent } from '@angular/material/paginator';
 
+const endpoint = `${environment.api}/posts`;
+
 @Injectable({ providedIn: 'root' })
 export class PostsService {
-  private endpoint = 'http://localhost:3000/api/posts';
   private posts: Post[] = [];
   totalPosts = 0;
   perPage = 5;
@@ -21,7 +24,7 @@ export class PostsService {
   getPosts(): void {
     const queryParams = `?perPage=${this.perPage}&currentPage=${this.currentPage}`;
     this.http
-      .get<{ posts: Post[]; totalPosts: number }>(this.endpoint + queryParams)
+      .get<{ posts: Post[]; totalPosts: number }>(endpoint + queryParams)
       .subscribe((response) => {
         console.log(response);
 
@@ -32,7 +35,7 @@ export class PostsService {
   }
 
   getPost(id: string): Observable<{ post: Post }> {
-    return this.http.get<{ post: Post }>(`${this.endpoint}/${id}`);
+    return this.http.get<{ post: Post }>(`${endpoint}/${id}`);
   }
 
   updatePost(id: string, updatedPost: Post, image: string | File): void {
@@ -52,10 +55,7 @@ export class PostsService {
     }
 
     this.http
-      .patch<{ message: string; post: Post }>(
-        `${this.endpoint}/${id}`,
-        formData
-      )
+      .patch<{ message: string; post: Post }>(`${endpoint}/${id}`, formData)
       .subscribe((response) => {
         console.log(response);
 
@@ -74,7 +74,7 @@ export class PostsService {
     postData.append('image', image);
 
     this.http
-      .post<{ message: string; post: Post }>(this.endpoint, postData)
+      .post<{ message: string; post: Post }>(endpoint, postData)
       .subscribe((response) => {
         console.log(response);
 
@@ -88,7 +88,7 @@ export class PostsService {
 
   deletePost(postToDelete: Post): void {
     this.http
-      .delete<{ message: string }>(`${this.endpoint}/${postToDelete._id}`)
+      .delete<{ message: string }>(`${endpoint}/${postToDelete._id}`)
       .subscribe((response) => {
         console.log(response);
 

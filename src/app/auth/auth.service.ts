@@ -3,7 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
+import { environment } from '../../environments/environment';
+
 import { AuthData } from './auth-data.model';
+import { environment } from 'src/environments/environment';
+
+const endpoint = `${environment.api}/user`;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -33,7 +38,7 @@ export class AuthService {
 
   createUser(email: string, password: string): void {
     const authData: AuthData = { email: email, password: password };
-    this.http.post('http://localhost:3000/api/user/signup', authData).subscribe(
+    this.http.post(`${endpoint}/signup`, authData).subscribe(
       () => {
         this.login(email, password);
       },
@@ -47,7 +52,7 @@ export class AuthService {
     const authData: AuthData = { email: email, password: password };
     this.http
       .post<{ token: string; expiresIn: number; id: string }>(
-        'http://localhost:3000/api/user/login',
+        `${endpoint}/login`,
         authData
       )
       .subscribe(
