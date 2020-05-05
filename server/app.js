@@ -18,23 +18,35 @@ mongoose
     console.log('There was an error connecting to DB');
   });
 
-app.use((request, response, next) => {
-  response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  response.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PATCH, DELETE, OPTIONS'
-  );
-  next();
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.use((request, response, next) => {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    );
+    response.setHeader(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PATCH, DELETE, OPTIONS'
+    );
+    next();
+  });
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/images', express.static(path.join('backend/images')));
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use('/api/posts', postRoutes);
 app.use('/api/user', userRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use('/', express.static(path.join(__dirname, 'client')));
+
+  app.use((request, response) => {
+    response.sendFile(path.join(__dirname, 'client', 'index.html'));
+  });
+}
 
 module.exports = app;

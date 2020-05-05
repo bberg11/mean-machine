@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 
 import { AuthData } from './auth-data.model';
-import { environment } from 'src/environments/environment';
 
 const endpoint = `${environment.api}/user`;
 
